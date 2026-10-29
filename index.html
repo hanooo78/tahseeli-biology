@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تحدّي التحصيلي في الأحياء</title>
+<style>
+:root{--green:#1d6b55;--green2:#2f8a6b;--mint:#e9f5ef;--cream:#fbfaf4;--ink:#20352d;--gold:#e8bd5a;--line:#dce8df;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+header{background:linear-gradient(135deg,#164c3f,#2d8064);color:white;padding:28px 18px 36px;text-align:center}
+.logo{font-size:42px;margin-bottom:4px}h1{font-size:clamp(25px,4vw,38px);margin:0 0 8px}header p{margin:0 auto;max-width:650px;color:#e8f5ee}
+.credits{margin-top:17px;font-size:14px;color:#e5f2eb}
+.wrap{width:min(1050px,92%);margin:0 auto}.intro{margin:-18px auto 22px;position:relative;background:white;border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:0 8px 25px #174d3c10}
+.intro strong{color:var(--green)}.section-title{margin:28px 0 12px;font-size:22px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:white;border:1px solid var(--line);border-radius:16px;padding:18px;text-align:right;cursor:pointer;transition:.18s;min-height:145px;color:var(--ink);font:inherit}
+.card:hover,.card:focus{border-color:var(--green2);transform:translateY(-2px);box-shadow:0 8px 20px #174d3c12;outline:none}
+.card .emoji{font-size:28px}.card h3{margin:5px 0;color:var(--green);font-size:18px}.card p{margin:0;color:#62756b;font-size:14px}.pill{display:inline-block;margin-top:10px;background:var(--mint);color:var(--green);padding:3px 10px;border-radius:30px;font-size:12px}
+#quiz{display:none;margin:24px 0 40px;background:white;border:1px solid var(--line);border-radius:18px;padding:clamp(16px,3vw,28px)}
+.quiz-top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;color:#62756b;font-size:14px}
+.progress{height:8px;background:#edf2ed;border-radius:9px;overflow:hidden;margin:12px 0 22px}.progress span{display:block;height:100%;background:var(--green2);width:0;transition:width .25s}
+#question{font-size:21px;margin:10px 0 18px}
+.answers{display:grid;gap:10px}.answer{width:100%;text-align:right;padding:13px 15px;background:#fff;border:1px solid var(--line);border-radius:12px;font:inherit;cursor:pointer;color:var(--ink)}
+.answer:hover:not(:disabled){background:#f4faf6;border-color:var(--green2)}.answer:disabled{cursor:default}.answer.correct{background:#e7f7eb;border-color:#58a76a}.answer.wrong{background:#fff0ec;border-color:#d97862}
+#feedback{display:none;margin-top:14px;padding:12px 14px;border-radius:12px}.good{background:#e7f7eb;color:#215d35}.bad{background:#fff0ec;color:#8d3829}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{border:0;border-radius:10px;padding:10px 18px;background:var(--green);color:white;font:inherit;cursor:pointer}.btn.secondary{background:#edf4ef;color:var(--green)}.btn:disabled{opacity:.45;cursor:default}
+#result{display:none;text-align:center;padding:18px 8px}#score{font-size:42px;color:var(--green);font-weight:bold}.note{font-size:13px;color:#6a7c72;margin:25px 0 15px;text-align:center}
+footer{background:#edf5ef;text-align:center;padding:20px;color:#4c6a5c;font-size:14px}
+@media(max-width:540px){.intro{padding:15px}.card{min-height:120px}#question{font-size:18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🧬</div>
+  <h1>تحدّي التحصيلي في الأحياء</h1>
+  <p>تسابقي، اكتشفي، وتعلّمي! اختبري معلوماتك واستعدّي للتحصيلي خطوة بخطوة.</p>
+  <div class="credits">إعداد المعلمة حنين الزهراني<br>مديرة المدرسة / د. ساره عسيري</div>
+</header>
+<main class="wrap">
+  <div class="intro">
+    <strong>أهلًا بكِ في تحدّي الأحياء!</strong>
+    <div>اختاري القسم، ثم أجيبي عن الأسئلة. ستظهر لكِ صحة الإجابة والنتيجة في نهاية التحدّي. يمكنكِ إعادة المحاولة لتحسين نتيجتك.</div>
+  </div>
+  <h2 class="section-title">اختاري قسم التحدّي</h2>
+  <div class="cards" id="sections"></div>
+  <section id="quiz" aria-live="polite">
+    <div class="quiz-top"><span id="categoryName"></span><span id="counter"></span></div>
+    <div class="progress"><span id="progressBar"></span></div>
+    <h2 id="question"></h2>
+    <div class="answers" id="answers"></div>
+    <div id="feedback"></div>
+    <div class="actions">
+      <button class="btn" id="nextBtn" disabled>السؤال التالي</button>
+      <button class="btn secondary" id="backBtn">العودة للأقسام</button>
+    </div>
+    <div id="result">
+      <div style="font-size:40px">🏆</div>
+      <h2>أحسنتِ! انتهى التحدّي</h2>
+      <div id="score"></div>
+      <p id="resultText"></p>
+      <div class="actions" style="justify-content:center">
+        <button class="btn" id="retryBtn">إعادة القسم</button>
+        <button class="btn secondary" id="homeBtn">اختيار قسم آخر</button>
+      </div>
+    </div>
+  </section>
+  <p class="note">الأسئلة في هذه النسخة تدريبية من إعداد الموقع، وليست أسئلة رسمية أو مسرّبة من الاختبار التحصيلي.</p>
+</main>
+<footer>تحدّي التحصيلي في الأحياء · بالتوفيق لطالباتنا 🌿<br>إعداد المعلمة حنين الزهراني | مديرة المدرسة / د. ساره عسيري</footer>
+<script>
+const bank = [
+ {title:"علم الخلية والطاقة",emoji:"🔬",desc:"الخلية، العضيات، والانقسام والطاقة",qs:[
+  ["ما العضية المسؤولة بصورة أساسية عن إنتاج معظم جزيئات ATP في الخلية حقيقية النواة؟",["الريبوسوم","الميتوكوندريا","جهاز جولجي","النواة"],1,"تحدث معظم مراحل التنفس الخلوي الهوائي في الميتوكوندريا."],
+  ["أي التراكيب الآتية ينظم دخول المواد إلى الخلية وخروجها؟",["الجدار الخلوي","الغشاء البلازمي","النوية","الفجوة"],1,"الغشاء البلازمي ذو نفاذية اختيارية وينظم تبادل المواد."],
+  ["ما ناتج عملية البناء الضوئي الذي تستخدمه النباتات مصدرًا للطاقة الكيميائية؟",["الجلوكوز","الأكسجين فقط","الماء","الأملاح المعدنية"],0,"تُحوّل الطاقة الضوئية إلى طاقة كيميائية مخزنة في الجلوكوز."],
+  ["في أي طور من الانقسام المتساوي تصطف الكروموسومات في منتصف الخلية؟",["الطور التمهيدي","الطور الاستوائي","الطور الانفصالي","الطور النهائي"],1,"تصطف الكروموسومات عند خط استواء الخلية في الطور الاستوائي."],
+  ["ما وظيفة الريبوسومات؟",["تصنيع البروتين","هضم الفضلات","تخزين الماء","إنتاج الدهون فقط"],0,"تترجم الريبوسومات المعلومات الوراثية لتكوين البروتينات."]
+ ]},
+ {title:"الوراثة والتكاثر",emoji:"🧬",desc:"DNA، الجينات، والانقسام المنصف",qs:[
+  ["ما الجزيء الذي يحمل المعلومات الوراثية في معظم المخلوقات الحية؟",["RNA فقط","DNA","الجلوكوز","ATP"],1,"يحتوي DNA على التعليمات الوراثية."],
+  ["إذا كان الطراز الجيني للفرد Aa، فما وصفه؟",["متماثل الجينات سائد","متماثل الجينات متنحٍ","غير متماثل الجينات","لا يحتوي أليلات"],2,"وجود أليلين مختلفين (A وa) يعني أن الفرد غير متماثل الجينات."],
+  ["ما أهمية الانقسام المنصف؟",["مضاعفة عدد الكروموسومات في الأمشاج","إنتاج أمشاج بنصف عدد الكروموسومات","إنتاج خلايا جسدية متطابقة فقط","إيقاف التنوع الوراثي"],1,"يخفض الانقسام المنصف عدد الكروموسومات إلى النصف ويسهم في التنوع الوراثي."],
+  ["ما اسم الشكل البديل للجين؟",["أليل","كروماتيد","نسيج","إنزيم"],0,"الأليل صورة بديلة للجين نفسه."],
+  ["أي قاعدة نيتروجينية توجد في RNA بدلًا من الثايمين؟",["الأدينين","الجوانين","اليوراسيل","السيتوسين"],2,"يحتوي RNA على اليوراسيل بدلًا من الثايمين الموجود في DNA."]
+ ]},
+ {title:"التنوع الحيوي والتصنيف",emoji:"🌿",desc:"المخلوقات الحية، البكتيريا، الطلائعيات والفطريات",qs:[
+  ["أي المجموعات الآتية لا تمتلك نواة محاطة بغشاء؟",["الفطريات","الحيوانات","البكتيريا","النباتات"],2,"البكتيريا بدائية النوى ولا تمتلك نواة حقيقية."],
+  ["ما الطريقة الشائعة لتكاثر الخميرة لاجنسيًا؟",["التبرعم","تكوين البذور","الإخصاب الداخلي","الانشطار الاختزالي"],0,"تتكاثر الخميرة غالبًا بالتبرعم."],
+  ["أي مما يأتي يُعد من خصائص الفطريات؟",["تصنع غذاءها بالبناء الضوئي","جدارها الخلوي يحتوي غالبًا على الكايتين","كلها وحيدة الخلية","لا تمتص الغذاء"],1,"تتميز جدران معظم الفطريات بوجود الكايتين، وتحصل على غذائها بالامتصاص."],
+  ["ما الصفة التي تميز النباتات عن الفطريات عمومًا؟",["حقيقية النوى","وجود جدار خلوي","القدرة على البناء الضوئي","التكاثر"],2,"النباتات ذاتية التغذي غالبًا وتقوم بالبناء الضوئي."],
+  ["أي مستوى تصنيفي يأتي مباشرة بعد المملكة في التصنيف الشائع؟",["النوع","الجنس","الشعبة","الفصيلة"],2,"يأتي مستوى الشعبة بعد المملكة، ثم الطائفة فالرتبة وغيرها."]
+ ]},
+ {title:"أجهزة جسم الإنسان",emoji:"🫁",desc:"التنفس، الدوران، الهضم، والإخراج",qs:[
+  ["أين يحدث تبادل الغازات بين الهواء والدم في الرئتين؟",["القصبة الهوائية","الحويصلات الهوائية","الحنجرة","الحجاب الحاجز"],1,"تتميز الحويصلات الهوائية بجدران رقيقة ومساحة سطح كبيرة لتبادل الغازات."],
+  ["ما وظيفة كريات الدم الحمراء الأساسية؟",["إنتاج الأجسام المضادة","نقل الأكسجين","تجلط الدم","هضم الغذاء"],1,"يساعد الهيموغلوبين في كريات الدم الحمراء على نقل الأكسجين."],
+  ["أي عضو ينتج العصارة الصفراوية؟",["المعدة","البنكرياس","الكبد","الأمعاء الغليظة"],2,"ينتج الكبد العصارة الصفراوية التي تساعد على استحلاب الدهون."],
+  ["ما الوحدة الوظيفية الأساسية للكلية؟",["النيفرون","الحويصلة","العصبون","الحالب"],0,"يقوم النيفرون بترشيح الدم والمساهمة في تكوين البول."],
+  ["ما العضلة الرئيسة التي تساعد على الشهيق؟",["عضلة القلب","الحجاب الحاجز","عضلات المعدة","عضلة اللسان"],1,"ينقبض الحجاب الحاجز ويتحرك إلى أسفل فيزداد حجم التجويف الصدري."]
+ ]},
+ {title:"علم البيئة",emoji:"🌎",desc:"السلاسل الغذائية، الأنظمة البيئية، ودورات المادة",qs:[
+  ["ما الكائنات التي تصنع غذاءها وتشكّل قاعدة معظم السلاسل الغذائية؟",["المحللات","المنتجات","المستهلكات الثانوية","المفترسات"],1,"تلتقط المنتجات الطاقة وتصنع المواد العضوية التي تعتمد عليها بقية المستويات."],
+  ["ما الدور الأساسي للمحللات في النظام البيئي؟",["منع انتقال الطاقة","إعادة المواد إلى البيئة","إنتاج ضوء الشمس","إيقاف دورات المادة"],1,"تفكك المحللات بقايا الكائنات وتعيد المواد المغذية إلى البيئة."],
+  ["إذا انتقلت الطاقة بين مستويات غذائية، فما الذي يحدث عادة للطاقة المتاحة؟",["تزداد دائمًا","تبقى ثابتة تمامًا","تقل","تتحول كلها إلى مادة"],2,"يفقد جزء كبير من الطاقة في كل مستوى غذائي، مثلًا على هيئة حرارة."],
+  ["أي العوامل الآتية عامل لاحيوي؟",["الفطريات","درجة الحرارة","الأشجار","الحشرات"],1,"العوامل اللاحيوية مكونات غير حية مثل الضوء والماء ودرجة الحرارة."],
+  ["ما اسم العلاقة التي يستفيد فيها مخلوق ويتضرر الآخر؟",["تبادل المنفعة","التطفل","التعايش","التنافس فقط"],1,"في التطفل يستفيد الطفيل ويتضرر العائل."]
+ ]},
+ {title:"التطور والأدلة العلمية",emoji:"🦴",desc:"الانتخاب الطبيعي، الأحافير، والتكيف",qs:[
+  ["ما الفكرة الأساسية للانتخاب الطبيعي؟",["تتساوى فرص بقاء جميع الأفراد دائمًا","الأفراد ذوو الصفات الملائمة قد يتركون نسلًا أكثر","تتغير الصفات بسبب الحاجة وحدها","تتوقف الطفرات تمامًا"],1,"تؤثر الصفات الموروثة الملائمة في البقاء والتكاثر عبر الأجيال."],
+  ["ماذا تقدم الأحافير للعلماء؟",["دليلًا على تاريخ الحياة وتغيرها","دليلًا على أن الأنواع لا تتغير","معلومات عن الكائنات الحية فقط","لا تقدم أي معلومات"],0,"تساعد الأحافير على تتبع المخلوقات القديمة والتغيرات عبر الزمن."],
+  ["ما المقصود بالتكيف؟",["صفة تساعد المخلوق على البقاء والتكاثر في بيئته","تغير يحدث للفرد بإرادته دائمًا","نوع من الغذاء","مرحلة من الانقسام الخلوي"],0,"التكيف صفة موروثة قد تحسن فرص البقاء والتكاثر في بيئة معينة."],
+  ["ما مصدر التنوع الوراثي الذي قد يؤثر في التطور؟",["الطفرات وإعادة تركيب الجينات","التعلم فقط","درجة الحرارة وحدها","التنفس الخلوي فقط"],0,"تنتج الطفرات وإعادة التركيب اختلافات وراثية بين الأفراد."],
+  ["تشابه عظام الأطراف الأمامية في الإنسان والحوت والخفاش دليل على:",["أصل تطوري مشترك","أنها تعيش في البيئة نفسها","أنها تتغذى بالطريقة نفسها","عدم وجود تنوع"],0,"التراكيب المتماثلة تدعم فكرة وجود أصل تطوري مشترك."]
+ ]}
+];
+let active=0,index=0,score=0,answered=false;
+const $=id=>document.getElementById(id);
+function renderSections(){
+ $('sections').innerHTML=bank.map((b,i)=>`<button class="card" data-i="${i}"><div class="emoji">${b.emoji}</div><h3>${b.title}</h3><p>${b.desc}</p><span class="pill">${b.qs.length} أسئلة تدريبية</span></button>`).join('');
+ document.querySelectorAll('.card').forEach(el=>el.addEventListener('click',()=>start(+el.dataset.i)));
+}
+function start(i){active=i;index=0;score=0;answered=false;$('quiz').style.display='block';$('result').style.display='none';$('question').style.display='block';$('answers').style.display='grid';$('feedback').style.display='none';$('nextBtn').style.display='inline-block';$('backBtn').style.display='inline-block';$('categoryName').textContent=bank[active].title;showQuestion();$('quiz').scrollIntoView({behavior:'smooth',block:'start'});}
+function showQuestion(){
+ const q=bank[active].qs[index];answered=false;$('counter').textContent=`السؤال ${index+1} من ${bank[active].qs.length}`;$('progressBar').style.width=`${index/bank[active].qs.length*100}%`;$('question').textContent=q[0];$('answers').innerHTML=q[1].map((a,i)=>`<button class="answer" data-a="${i}">${["أ","ب","ج","د"][i]}. ${a}</button>`).join('');$('feedback').style.display='none';$('nextBtn').disabled=true;$('nextBtn').textContent=index===bank[active].qs.length-1?'عرض النتيجة':'السؤال التالي';
+ document.querySelectorAll('.answer').forEach(el=>el.addEventListener('click',()=>choose(+el.dataset.a)));
+}
+function choose(n){if(answered)return;answered=true;const q=bank[active].qs[index];const correct=q[2];document.querySelectorAll('.answer').forEach((el,i)=>{el.disabled=true;if(i===correct)el.classList.add('correct');if(i===n&&i!==correct)el.classList.add('wrong')});if(n===correct)score++;$('feedback').style.display='block';$('feedback').className=n===correct?'good':'bad';$('feedback').innerHTML=(n===correct?'✔ إجابة صحيحة! ':'✖ ليست الإجابة الصحيحة. ')+q[3];$('nextBtn').disabled=false;$('progressBar').style.width=`${(index+1)/bank[active].qs.length*100}%`;}
+function finish(){ $('question').style.display='none';$('answers').style.display='none';$('feedback').style.display='none';$('nextBtn').style.display='none';$('backBtn').style.display='none';$('result').style.display='block';$('score').textContent=`${score} / ${bank[active].qs.length}`;let pct=score/bank[active].qs.length; $('resultText').textContent=pct===1?'ممتاز! إجاباتك كلها صحيحة، واصلي التدريب.':pct>=.6?'عمل جيد! راجعي التفسيرات وحاولي مرة أخرى لرفع نتيجتك.':'لا بأس، التعلّم بالمحاولة. راجعي الشرح ثم أعيدي القسم.';$('progressBar').style.width='100%';}
+$('nextBtn').addEventListener('click',()=>{if(!answered)return;if(index<bank[active].qs.length-1){index++;showQuestion()}else finish()});
+function home(){ $('quiz').style.display='none';document.querySelector('.section-title').scrollIntoView({behavior:'smooth'});}
+$('backBtn').addEventListener('click',home);$('homeBtn').addEventListener('click',home);$('retryBtn').addEventListener('click',()=>start(active));
+renderSections();
+</script>
+</body>
+</html>
